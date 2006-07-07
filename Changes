@@ -1,0 +1,6 @@
+Revision history for Perl extension JavaScript::Minifier.
+
+0.01  Thu Jul  6 22:41:08 2006
+	- original version; created by h2xs 1.23 with options
+		-XA -n JavaScript::Minifier
+
