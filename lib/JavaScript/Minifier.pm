@@ -36,7 +36,7 @@ package JavaScript::Minifier;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -73,7 +73,7 @@ sub _out {
   my $data = shift;
   
   my $out = $self->{'outstream'};
-  if (!$out){
+  if ($out){
     $self->{'data'} .= $data;
   }
   else {
@@ -308,7 +308,11 @@ sub minify(){
   $self->_out("/* ".__PACKAGE__." $VERSION */\n");
   
   $self->_jsmin();
-  
+
+  if ($self->{'data'} && $self->{'outstream'}) {
+    print { $self->{'outstream'} } $self->{'data'};   
+  } 
+ 
   return $self->{'data'} || 1;
 }
 
