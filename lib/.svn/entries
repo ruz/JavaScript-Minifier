@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="41"
+   name=""
+   committed-date="2007-05-24T04:45:44.811411Z"
+   url="http://dev.michaux.ca/svn/random/JavaScript-Minifier/lib"
+   last-author="peter"
+   kind="dir"
+   uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
+   repos="http://dev.michaux.ca/svn/random"
+   revision="41"/>
+<entry
+   name="JavaScript"
+   kind="dir"/>
+</wc-entries>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="41"
+   name=""
+   committed-date="2007-05-24T04:45:44.811411Z"
+   url="http://dev.michaux.ca/svn/random/JavaScript-Minifier/lib/JavaScript"
+   last-author="peter"
+   kind="dir"
+   uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
+   repos="http://dev.michaux.ca/svn/random"
+   revision="41"/>
+<entry
+   committed-rev="41"
+   name="Minifier.pm"
+   text-time="2007-05-24T15:07:48.000000Z"
+   committed-date="2007-05-24T04:45:44.811411Z"
+   checksum="654d870efa9ee9c241d25615914c8be7"
+   last-author="peter"
+   kind="file"
+   prop-time="2007-05-24T15:07:48.000000Z"/>
+</wc-entries>
