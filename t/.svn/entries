@@ -10,17 +10,17 @@
    kind="dir"
    uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
    repos="http://dev.michaux.ca/svn/random"
-   revision="41"/>
+   revision="42"/>
 <entry
    name="scripts"
    kind="dir"/>
 <entry
    committed-rev="41"
    name="JavaScript-Minifier.t"
-   text-time="2007-05-24T15:07:48.000000Z"
+   text-time="2007-05-24T15:27:38.000000Z"
    committed-date="2007-05-24T04:45:44.811411Z"
    checksum="d8d7271cc4b67ee946dfb171e63f4975"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:07:48.000000Z"/>
+   prop-time="2007-05-24T15:27:38.000000Z"/>
 </wc-entries>
