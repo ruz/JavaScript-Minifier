@@ -2,211 +2,229 @@
 <wc-entries
    xmlns="svn:">
 <entry
-   committed-rev="25"
+   committed-rev="50"
    name=""
-   committed-date="2007-05-21T15:56:44.451645Z"
+   committed-date="2007-05-26T16:59:51.046681Z"
    url="http://dev.michaux.ca/svn/random/JavaScript-Minifier/t/scripts"
    last-author="peter"
    kind="dir"
    uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
    repos="http://dev.michaux.ca/svn/random"
-   revision="42"/>
+   revision="50"/>
 <entry
    committed-rev="25"
    name="s11.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="2d9e7d2264d20aeb6415adc3314e1d29"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s12-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="d2d70bb49761acf95eec1d55b2a81b22"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s12.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="6d93016b51e27303d38be57bdbf5fd6a"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
+<entry
+   committed-rev="49"
+   name="s13-expected.js"
+   text-time="2007-05-26T17:03:06.000000Z"
+   committed-date="2007-05-26T16:59:38.102912Z"
+   checksum="75c29da99b16cb148d98d58345dcdccd"
+   last-author="peter"
+   kind="file"
+   prop-time="2007-05-26T17:03:06.000000Z"/>
+<entry
+   committed-rev="49"
+   name="s13.js"
+   text-time="2007-05-26T17:03:06.000000Z"
+   committed-date="2007-05-26T16:59:38.102912Z"
+   checksum="902075cbbd2c684cc5836a9b68ea9cd5"
+   last-author="peter"
+   kind="file"
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s2-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="607431b4dc624fa0d2500c432126718e"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s2.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="fd5f3ed075b3d09214dea2e632327ba4"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s3-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="195c0cb2540990b45267a8fa53544eed"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s3.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="d5544403cb49ee571e2d134c4ee6e9df"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s4-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="07c2bbafec5345f3d1b8bff32b6a4067"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s4.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="3c2e3a8c544f7483c97d9309a0a68e0e"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s5-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="66922980dad88408712d40d394eb688d"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
-<entry
-   committed-rev="25"
-   name="s5.js"
-   text-time="2007-05-24T15:27:38.000000Z"
-   committed-date="2007-05-21T15:56:44.451645Z"
-   checksum="d99c7a887437419c9aadb3308258f304"
-   last-author="peter"
-   kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s6-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="db645cec7051c8c9b9a856cfb0821291"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
-   name="s7-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   name="s5.js"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
-   checksum="b8bb8ceca38eedf333189291b10a088a"
+   checksum="d99c7a887437419c9aadb3308258f304"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s6.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="18d3feea2b9469d7faff3665b52b037e"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
+<entry
+   committed-rev="25"
+   name="s7-expected.js"
+   text-time="2007-05-26T17:03:06.000000Z"
+   committed-date="2007-05-21T15:56:44.451645Z"
+   checksum="b8bb8ceca38eedf333189291b10a088a"
+   last-author="peter"
+   kind="file"
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s7.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="f02d1fae0e801ff8f164cf85ffb53754"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s8-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="497c20d81c87db87010419126d4fafb5"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s8.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="86bf53b1592c8fbaeb5d2066b736636a"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s9-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="525d85866a5c78247780efcef4c95d81"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s9.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="7d5df0cd6cfb32e682c161a91849cbe4"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s10-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="59536f447b787751a3db851c88e4bc81"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s11-expected.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="b9f959e6abec1576e68425ac8027733e"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="25"
    name="s10.js"
-   text-time="2007-05-24T15:27:38.000000Z"
+   text-time="2007-05-26T17:03:06.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="4d1a0830ef4d5398127146112392d0e9"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 </wc-entries>

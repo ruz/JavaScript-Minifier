@@ -2,25 +2,25 @@
 <wc-entries
    xmlns="svn:">
 <entry
-   committed-rev="41"
+   committed-rev="50"
    name=""
-   committed-date="2007-05-24T04:45:44.811411Z"
+   committed-date="2007-05-26T16:59:51.046681Z"
    url="http://dev.michaux.ca/svn/random/JavaScript-Minifier/t"
    last-author="peter"
    kind="dir"
    uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
    repos="http://dev.michaux.ca/svn/random"
-   revision="42"/>
+   revision="50"/>
 <entry
    name="scripts"
    kind="dir"/>
 <entry
-   committed-rev="41"
+   committed-rev="48"
    name="JavaScript-Minifier.t"
-   text-time="2007-05-24T15:27:38.000000Z"
-   committed-date="2007-05-24T04:45:44.811411Z"
-   checksum="d8d7271cc4b67ee946dfb171e63f4975"
+   text-time="2007-05-26T17:03:06.000000Z"
+   committed-date="2007-05-26T16:55:25.968057Z"
+   checksum="1921b0f75c2307b4aef8198e5d9733d4"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 </wc-entries>

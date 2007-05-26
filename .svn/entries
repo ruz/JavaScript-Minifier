@@ -2,15 +2,15 @@
 <wc-entries
    xmlns="svn:">
 <entry
-   committed-rev="42"
+   committed-rev="50"
    name=""
-   committed-date="2007-05-24T15:27:03.359960Z"
+   committed-date="2007-05-26T16:59:51.046681Z"
    url="http://dev.michaux.ca/svn/random/JavaScript-Minifier"
    last-author="peter"
    kind="dir"
    uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
    repos="http://dev.michaux.ca/svn/random"
-   revision="42"/>
+   revision="50"/>
 <entry
    name="t"
    kind="dir"/>
@@ -20,37 +20,37 @@
 <entry
    committed-rev="25"
    name="MANIFEST"
-   text-time="2007-05-24T15:27:39.000000Z"
+   text-time="2007-05-26T17:03:07.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="84e135dd3ba1c77be5b3ded51d0e5774"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:38.000000Z"/>
+   prop-time="2007-05-26T17:03:06.000000Z"/>
 <entry
    committed-rev="42"
    name="Makefile.PL"
-   text-time="2007-05-24T15:27:39.000000Z"
+   text-time="2007-05-26T17:03:07.000000Z"
    committed-date="2007-05-24T15:27:03.359960Z"
    checksum="49665ff945102203b53a3c971e3c4813"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:39.000000Z"/>
+   prop-time="2007-05-26T17:03:07.000000Z"/>
 <entry
    committed-rev="25"
    name="Changes"
-   text-time="2007-05-24T15:27:39.000000Z"
+   text-time="2007-05-26T17:03:07.000000Z"
    committed-date="2007-05-21T15:56:44.451645Z"
    checksum="44534f80591a74d751e093ee64205c24"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:39.000000Z"/>
+   prop-time="2007-05-26T17:03:07.000000Z"/>
 <entry
-   committed-rev="25"
+   committed-rev="43"
    name="README"
-   text-time="2007-05-24T15:27:39.000000Z"
-   committed-date="2007-05-21T15:56:44.451645Z"
-   checksum="93973a8d78c839b42f26d9feb591019a"
+   text-time="2007-05-26T17:03:07.000000Z"
+   committed-date="2007-05-26T03:57:35.393586Z"
+   checksum="05819e5a9c801f993013ce5980eb09f3"
    last-author="peter"
    kind="file"
-   prop-time="2007-05-24T15:27:39.000000Z"/>
+   prop-time="2007-05-26T17:03:07.000000Z"/>
 </wc-entries>

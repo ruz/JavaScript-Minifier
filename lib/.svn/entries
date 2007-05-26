@@ -2,15 +2,15 @@
 <wc-entries
    xmlns="svn:">
 <entry
-   committed-rev="41"
+   committed-rev="48"
    name=""
-   committed-date="2007-05-24T04:45:44.811411Z"
+   committed-date="2007-05-26T16:55:25.968057Z"
    url="http://dev.michaux.ca/svn/random/JavaScript-Minifier/lib"
    last-author="peter"
    kind="dir"
    uuid="427ac5bd-47c7-43c0-8311-854a25a4a4d3"
    repos="http://dev.michaux.ca/svn/random"
-   revision="42"/>
+   revision="50"/>
 <entry
    name="JavaScript"
    kind="dir"/>

@@ -297,7 +297,7 @@ sub minify {
               # The comment represented whitespace that cannot be removed. Therefore replace the now gone comment with a whitespace.
               action1($s);
             }
-            elsif (!isPrefix($s->{last})) {
+            elsif (defined($s->{last}) && !isPrefix($s->{last})) {
               preserveEndspace($s);
             }
             else {
@@ -413,6 +413,8 @@ For static JavaScript files, it is recommended that you minify during the build 
 =head2 EXPORT
 
 None by default.
+
+Exportable on demand: minifiy()
 
 
 =head1 SEE ALSO
