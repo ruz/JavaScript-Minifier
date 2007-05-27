@@ -7,16 +7,14 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(minify);
 
-our $VERSION = '1.0';
+our $VERSION = '1.0.2';
 
 # -----------------------------------------------------------------------------
 
+#return true if the character is allowed in identifier.
 sub isAlphanum {
   my $x = shift;
-  #return true if the character is allowed in identifier.
-  return (($x ge 'a' && $x le 'z') || ($x ge '0' && $x le '9') ||
-          ($x ge 'A' && $x le 'Z') || $x eq '_' || $x eq '$' ||
-          $x eq '\\' || ord($x) > 126);
+  return ($x =~ /[\w\$\\]/ || ord($x) > 126);
 }
 
 sub isSpace {
@@ -34,32 +32,23 @@ sub isWhitespace {
   return (isSpace($x) || isEndspace($x));
 }
 
-# TRICKY: isAt() is the only "is" function here that checks if argument is defined
-sub isAt {
-  my $x = shift;
-  return (defined($x) && $x eq '@') ? 1 : 0;
-}
-
 # New line characters before or after these characters can be removed.
 # Not + - / in this list because they require special care.
 sub isInfix {
   my $x = shift;
-  return ($x eq ',' || $x eq '=' || $x eq ';' ||
-          $x eq '?' || $x eq ':' || $x eq '&' ||
-          $x eq '%' || $x eq '*' || $x eq '|' ||
-          $x eq '<' || $x eq '>' || $x eq "\n");  
+  $x =~ /[,;:=&%*<>\?\|\n]/;
 }
 
 # New line characters after these characters can be removed.
 sub isPrefix {
   my $x = shift;
-  return ($x eq '{' || $x eq '(' || $x eq '[' || $x eq '!' || isInfix($x));
+  return ($x =~ /[\{\(\[!]/ || isInfix($x));
 }
 
 # New line characters before these characters can removed.
 sub isPostfix {
   my $x = shift;
-  return ($x eq ']' || $x eq '}' || $x eq ')' || isInfix($x));
+  return ($x =~ /[\}\)\]]/ || isInfix($x));
 }
 
 # -----------------------------------------------------------------------------
@@ -257,7 +246,7 @@ sub minify {
     # Each branch handles trailing whitespace and ensures $s->{a} is on non-whitespace or undef when branch finishes
     if ($s->{a} eq '/') { # a division, comment, or regexp literal
       if (defined($s->{b}) && $s->{b} eq '/') { # slash-slash comment
-        $ccFlag = isAt($s->{c}); # tests in IE7 show no space allowed between slashes and at symbol
+        $ccFlag = defined($s->{c}) && $s->{c} eq '@'; # tests in IE7 show no space allowed between slashes and at symbol
         do {
           $ccFlag ? action2($s) : action3($s);
         } until (!defined($s->{a}) || isEndspace($s->{a}));
@@ -275,7 +264,7 @@ sub minify {
         }
       }
       elsif (defined($s->{b}) && $s->{b} eq '*') { # slash-star comment
-        $ccFlag = isAt($s->{c}); # test in IE7 shows no space allowed between star and at symbol
+        $ccFlag = defined($s->{c}) && $s->{c} eq '@'; # test in IE7 shows no space allowed between star and at symbol
         do {
           $ccFlag ? action2($s) : action3($s);
         } until (!defined($s->{b}) || ($s->{a} eq '*' && $s->{b} eq '/'));
