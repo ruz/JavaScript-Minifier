@@ -7,7 +7,7 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(minify);
 
-our $VERSION = '1.0.2';
+our $VERSION = '1.03';
 
 # -----------------------------------------------------------------------------
 
