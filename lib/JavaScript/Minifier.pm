@@ -7,7 +7,7 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(minify);
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 # -----------------------------------------------------------------------------
 
@@ -413,6 +413,8 @@ svn co http://dev.michaux.ca/svn/random/JavaScript-Minifier
 
 This module is inspired by Douglas Crockford's JSMin:
 http://www.crockford.com/javascript/jsmin.html
+
+You may also be interested in the CSS::Minifier module also available on CPAN.
 
 
 =head1 AUTHORS
