@@ -28,4 +28,6 @@ t/scripts/s12.js
 t/scripts/s12-expected.js
 t/scripts/s13.js
 t/scripts/s13-expected.js
+t/scripts/s14.js
+t/scripts/s14-expected.js
 META.yml                                 Module meta-data (added by MakeMaker)

@@ -3,7 +3,7 @@
 
 #########################
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 BEGIN { use_ok('JavaScript::Minifier', qw(minify)) };
 
 #########################
@@ -59,6 +59,7 @@ BEGIN {
   minTest('s11', 'testing s11');  # string and regexp literals
   minTest('s12', 'testing s12');  # other characters
   minTest('s13', 'testing s13');  # comment at start
+  minTest('s14', 'testing s14');  # slash following square bracket is division not RegExp
 
   is(minify(input => 'var x = 2;'), 'var x=2;', 'string literal input and ouput');
   is(minify(input => "var x = 2;\n;;;alert('hi');\nvar x = 2;", stripDebug => 1), 'var x=2;var x=2;', 'scriptDebug option');

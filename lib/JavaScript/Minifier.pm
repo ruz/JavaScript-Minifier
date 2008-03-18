@@ -7,7 +7,7 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(minify);
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 # -----------------------------------------------------------------------------
 
@@ -298,7 +298,8 @@ sub minify {
           die 'unterminated comment, stopped';
         }
       }
-      elsif (defined($s->{lastnws}) && ($s->{lastnws} eq ')' || $s->{lastnws} eq '.' || isAlphanum($s->{lastnws}))) { # division
+      elsif (defined($s->{lastnws}) && ($s->{lastnws} eq ')' || $s->{lastnws} eq ']' ||
+                                        $s->{lastnws} eq '.' || isAlphanum($s->{lastnws}))) { # division
         action1($s);
         collapseWhitespace($s);
         # don't want a division to become a slash-slash comment with following conditional comment
@@ -370,7 +371,7 @@ To minify a JavaScript file and have the output written directly to another file
 
   use JavaScript::Minifier qw(minify);
   open(INFILE, 'myScript.js') or die;
-  open(OUTFILE, 'myScript-min.js') or die;
+  open(OUTFILE, '>myScript-min.js') or die;
   minify(input => *INFILE, outfile => *OUTFILE);
   close(INFILE);
   close(OUTFILE);
