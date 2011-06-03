@@ -156,11 +156,12 @@ sub putLiteral {
 # when this function ends.
 sub collapseWhitespace {
   my $s = shift;
-  while (defined($s->{a}) && isWhitespace($s->{a}) &&
-         defined($s->{b}) && isWhitespace($s->{b})) {
-    if (isEndspace($s->{a}) || isEndspace($s->{b})) {
-      $s->{a} = "\n";
-    }
+  return unless defined($s->{a}) && isWhitespace($s->{a});
+
+  $s->{a} = "\n" if isEndspace($s->{a});
+
+  while ( defined($s->{b}) && isWhitespace($s->{b}) ) {
+    $s->{a} = "\n" if isEndspace($s->{b});
     action4($s); # delete b
   }
 }
