@@ -14,27 +14,27 @@ our $VERSION = '1.05';
 #return true if the character is allowed in identifier.
 sub isAlphanum { return $_[0] =~ /[\w\$\\]/ || ord($_[0]) > 126 }
 
-my %space = map { $_ => 1 } (' ', "\t");
-sub isSpace { return $space{ $_[0] } }
+my %isSpace = map { $_ => 1 } (' ', "\t");
+sub isSpace { return $isSpace{ $_[0] } }
 
-my %endspace = map { $_ => 1 } ("\n", "\r", "\f");
-sub isEndspace { return $endspace{ $_[0] } }
+my %isEndspace = map { $_ => 1 } ("\n", "\r", "\f");
+sub isEndspace { return $isEndspace{ $_[0] } }
 
-my %whitespace = (%space, %endspace);
-sub isWhitespace { return $whitespace{ $_[0] } }
+my %isWhitespace = (%isSpace, %isEndspace);
+sub isWhitespace { return $isWhitespace{ $_[0] } }
 
 # New line characters before or after these characters can be removed.
 # Not + - / in this list because they require special care.
-my %infix = map { $_ => 1 } (qw(; : = & % * < > ? |), ',', "\n");
-sub isInfix { return $infix{ $_[0] } }
+my %isInfix = map { $_ => 1 } (qw(; : = & % * < > ? |), ',', "\n");
+sub isInfix { return $isInfix{ $_[0] } }
 
 # New line characters after these characters can be removed.
-my %prefix = ( %infix, map { $_ => 1 } ('{', '(', '[', '!') );
-sub isPrefix { return $prefix{ $_[0] } }
+my %isPrefix = ( %isInfix, map { $_ => 1 } ('{', '(', '[', '!') );
+sub isPrefix { return $isPrefix{ $_[0] } }
 
 # New line characters before these characters can removed.
-my %postfix = ( %infix, map { $_ => 1 } ('}', ')', ']') );
-sub isPostfix { return $postfix{ $_[0] } }
+my %isPostfix = ( %isInfix, map { $_ => 1 } ('}', ')', ']') );
+sub isPostfix { return $isPostfix{ $_[0] } }
 
 # -----------------------------------------------------------------------------
 
