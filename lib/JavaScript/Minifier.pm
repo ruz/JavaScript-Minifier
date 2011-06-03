@@ -12,45 +12,35 @@ our $VERSION = '1.05';
 # -----------------------------------------------------------------------------
 
 #return true if the character is allowed in identifier.
+{
 sub isAlphanum {
   my $x = shift;
   return ($x =~ /[\w\$\\]/ || ord($x) > 126);
 }
 
-sub isSpace {
-  my $x = shift;
-  return ($x eq ' ' || $x eq "\t");
-}
+my %space = map { $_ => undef } (' ', "\t");
+sub isSpace { return exists $space{ $_[0] } }
 
-sub isEndspace {
-  my $x = shift;
-  return ($x eq "\n" || $x eq "\r" || $x eq "\f");
-}
+my %endspace = map { $_ => undef } ("\n", "\r", "\f");
+sub isEndspace { return exists $endspace{ $_[0] } }
 
-sub isWhitespace {
-  my $x = shift;
-  return (isSpace($x) || isEndspace($x));
-}
+my %whitespace = (%space, %endspace);
+sub isWhitespace { return exists $whitespace{ $_[0] } }
 
 # New line characters before or after these characters can be removed.
 # Not + - / in this list because they require special care.
-sub isInfix {
-  my $x = shift;
-  $x =~ /[,;:=&%*<>\?\|\n]/;
-}
+my %infix = map { $_ => undef } (qw(; : = & % * < > ? |), ',', "\n");
+sub isInfix { return exists $infix{ $_[0] } }
 
 # New line characters after these characters can be removed.
-sub isPrefix {
-  my $x = shift;
-  return ($x =~ /[\{\(\[!]/ || isInfix($x));
-}
+my %prefix = ( %infix, map { $_ => undef } ('{', '(', '[', '!') );
+sub isPrefix { return exists $prefix{ $_[0] } }
 
 # New line characters before these characters can removed.
-sub isPostfix {
-  my $x = shift;
-  return ($x =~ /[\}\)\]]/ || isInfix($x));
-}
+my %postfix = ( %infix, map { $_ => undef } ('}', ')', ']') );
+sub isPostfix { return exists $postfix{ $_[0] } }
 
+}
 # -----------------------------------------------------------------------------
 
 sub _get {
