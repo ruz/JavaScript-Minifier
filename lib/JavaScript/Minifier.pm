@@ -156,7 +156,6 @@ sub putLiteral {
 # when this function ends.
 sub collapseWhitespace {
   my $s = shift;
-  return unless defined($s->{a}) && isWhitespace($s->{a});
 
   $s->{a} = "\n" if isEndspace($s->{a});
 
@@ -179,7 +178,7 @@ sub skipWhitespace {
 # If any of the whitespace is a new line then print one new line.
 sub preserveEndspace {
   my $s = shift;
-  collapseWhitespace($s);
+  collapseWhitespace($s) if defined($s->{a}) && isWhitespace($s->{a});
   if (defined($s->{a}) && isEndspace($s->{a}) && defined($s->{b}) && !isPostfix($s->{b}) ) {
     action1($s);
   }
@@ -299,13 +298,13 @@ sub minify {
       elsif (defined($s->{lastnws}) && ($s->{lastnws} eq ')' || $s->{lastnws} eq ']' ||
                                         $s->{lastnws} eq '.' || isAlphanum($s->{lastnws}))) { # division
         action1($s);
-        collapseWhitespace($s);
+        collapseWhitespace($s) if defined($s->{a}) && isWhitespace($s->{a});
         # don't want a division to become a slash-slash comment with following conditional comment
         onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
       }
       else { # regexp literal
         putLiteral($s);
-        collapseWhitespace($s);
+        collapseWhitespace($s) if defined($s->{a}) && isWhitespace($s->{a});
         # don't want closing delimiter to become a slash-slash comment with following conditional comment
         onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
       }
@@ -316,15 +315,15 @@ sub minify {
     }
     elsif ($s->{a} eq '+' || $s->{a} eq '-') { # careful with + + and - -
       action1($s);
-      collapseWhitespace($s);
       if (defined($s->{a}) && isWhitespace($s->{a})) {
+        collapseWhitespace($s);
         (defined($s->{b}) && $s->{b} eq $s->{last}) ? action1($s) : preserveEndspace($s);
       }
     }
     elsif (isAlphanum($s->{a})) { # keyword, identifiers, numbers
       action1($s);
-      collapseWhitespace($s);
       if (defined($s->{a}) && isWhitespace($s->{a})) {
+        collapseWhitespace($s);
         # if $s->{b} is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
         (defined($s->{b}) && (isAlphanum($s->{b}) || $s->{b} eq '.')) ? action1($s) : preserveEndspace($s);
       }
