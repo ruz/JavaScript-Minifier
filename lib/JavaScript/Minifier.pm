@@ -79,9 +79,17 @@ sub action1 {
   if (!isWhitespace($s->{a})) {
     $s->{lastnws} = $s->{a};    
   }
-  $s->{last} = $s->{a};
 
-  _put($s, $s->{a});
+  _put($s, $s->{last} = $s->{a});
+  $s->{a} = $s->{b};
+  $s->{b} = $s->{c};
+  $s->{c} = $s->{d};
+  $s->{d} = _get($s);
+}
+
+sub action1_nws {
+  my $s = shift;
+  _put($s, $s->{last} = $s->{lastnws} = $s->{a});
   $s->{a} = $s->{b};
   $s->{b} = $s->{c};
   $s->{c} = $s->{d};
@@ -133,11 +141,11 @@ sub action4 {
 sub putLiteral {
   my $s = shift;
   my $delimiter = $s->{a}; # ', " or /
-  action1($s);
+  action1_nws($s);
   do {
     while (defined($s->{a}) && $s->{a} eq '\\') { # escape character only escapes only the next one character
-      action1($s);       
-      action1($s);       
+      action1_nws($s);       
+      action1_nws($s);       
     }
     action1($s);
   } until ($s->{last} eq $delimiter || !defined($s->{a}));
@@ -311,14 +319,14 @@ sub minify {
       preserveEndspace($s);
     }
     elsif ($s->{a} eq '+' || $s->{a} eq '-') { # careful with + + and - -
-      action1($s);
+      action1_nws($s);
       if (defined($s->{a}) && isWhitespace($s->{a})) {
         collapseWhitespace($s);
         (defined($s->{b}) && $s->{b} eq $s->{last}) ? action1($s) : preserveEndspace($s);
       }
     }
     elsif (isAlphanum($s->{a})) { # keyword, identifiers, numbers
-      action1($s);
+      action1_nws($s);
       if (defined($s->{a}) && isWhitespace($s->{a})) {
         collapseWhitespace($s);
         # if $s->{b} is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
@@ -326,7 +334,7 @@ sub minify {
       }
     }
     elsif ($s->{a} eq ']' || $s->{a} eq '}' || $s->{a} eq ')') { # no need to be followed by space but maybe needs following new line
-      action1($s);
+      action1_nws($s);
       preserveEndspace($s);
     }
     elsif ($s->{stripDebug} && $s->{a} eq ';' &&
