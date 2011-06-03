@@ -49,6 +49,22 @@ sub _get {
   }
 }
 
+sub _get_more {
+  my $s = shift;
+  if ($s->{inputFile} ) {
+    push @{ $s->{buf} }, getc($s->{input}) while @{ $s->{buf} } < 128;
+  }
+  else {
+    my $len = 128 - @{ $s->{buf} };
+    {
+        no warnings 'substr', 'uninitialized';
+        push @{ $s->{buf} }, split //, substr $s->{input}, $s->{inputPos}, $len;
+    }
+    $s->{inputPos} += $len;
+    push @{ $s->{buf} }, (undef)x(128 - @{ $s->{buf} }) if @{ $s->{buf} } < 128;
+  }
+}
+
 sub _put {
   if (my $outfile = $_[0]->{outfile}) {
     print $outfile $_[1];
@@ -74,13 +90,13 @@ sub action1 {
   }
 
   _put($s, $s->{last} = shift @{ $s->{buf} });
-  push @{ $s->{buf} }, _get($s);
+  _get_more($s) if @{ $s->{buf} } < 4;
 }
 
 sub action1_nws {
   my $s = shift;
   _put($s, $s->{last} = $s->{lastnws} = shift @{ $s->{buf} });
-  push @{ $s->{buf} }, _get($s);
+  _get_more($s) if @{ $s->{buf} } < 4;
 }
 
 # sneeky output $s->{buf}[0] for comments
@@ -88,7 +104,7 @@ sub action2 {
   my $s = shift;
 
   _put($s, shift @{ $s->{buf} });
-  push @{ $s->{buf} }, _get($s);
+  _get_more($s) if @{ $s->{buf} } < 4;
 }
 
 # move b to a
@@ -101,19 +117,7 @@ sub action3 {
   my $s = shift;
 
   shift @{ $s->{buf} };
-  push @{ $s->{buf} }, _get($s);
-}
-
-# move c to b
-# move d to c
-# new d
-#
-# i.e. delete b
-sub action4 {
-  my $s = shift;
-  $s->{buf}[1] = $s->{buf}[2];
-  $s->{buf}[2] = $s->{buf}[3];
-  $s->{buf}[3] = _get($s);
+  _get_more($s) if @{ $s->{buf} } < 4;
 }
 
 # -----------------------------------------------------------------------------
@@ -150,9 +154,10 @@ sub collapseWhitespace {
   while ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
     $lead = "\n" if $isEndspace{$s->{buf}[0]};
     shift @{ $s->{buf} };
-    push @{ $s->{buf} }, _get($s);
+    _get_more($s) unless @{ $s->{buf} };
   }
   unshift @{ $s->{buf} }, $lead;
+  _get_more($s) if @{ $s->{buf} } < 4;
 }
 
 # Advance $s->{buf}[0] to non-whitespace or end of file.
