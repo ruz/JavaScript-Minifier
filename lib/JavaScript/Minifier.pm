@@ -57,14 +57,11 @@ sub _get {
 }
 
 sub _put {
-  my $s = shift;
-  my $x = shift;
-  my $outfile = ($s->{outfile});
-  if (defined($s->{outfile})) {
-    print $outfile $x;
+  if (my $outfile = $_[0]->{outfile}) {
+    print $outfile $_[1];
   }
   else {
-    $s->{output} .= $x;
+    $_[0]->{output} .= $_[1];
   }
 }
 
