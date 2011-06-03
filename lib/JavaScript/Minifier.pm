@@ -69,7 +69,7 @@ sub _put {
 # i.e. print a and advance
 sub action1 {
   my $s = shift;
-  if (!isWhitespace($s->{buf}[0])) {
+  if (!$isWhitespace{$s->{buf}[0]}) {
     $s->{lastnws} = $s->{buf}[0];    
   }
 
@@ -145,10 +145,10 @@ sub collapseWhitespace {
   my $s = shift;
 
   my $lead = shift @{ $s->{buf} };
-  $lead = "\n" if isEndspace($lead);
+  $lead = "\n" if $isEndspace{$lead};
 
-  while ( defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]) ) {
-    $lead = "\n" if isEndspace($s->{buf}[0]);
+  while ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
+    $lead = "\n" if $isEndspace{$s->{buf}[0]};
     shift @{ $s->{buf} };
     push @{ $s->{buf} }, _get($s);
   }
@@ -159,7 +159,7 @@ sub collapseWhitespace {
 # Doesn't print any of this whitespace.
 sub skipWhitespace {
   my $s = shift;
-  while (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0])) {
+  while (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
     action3($s);
   }
 }
@@ -168,8 +168,8 @@ sub skipWhitespace {
 # If any of the whitespace is a new line then print one new line.
 sub preserveEndspace {
   my $s = shift;
-  collapseWhitespace($s) if defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]);
-  if (defined($s->{buf}[0]) && isEndspace($s->{buf}[0]) && defined($s->{buf}[1]) && !isPostfix($s->{buf}[1]) ) {
+  collapseWhitespace($s) if defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
+  if (defined($s->{buf}[0]) && $isEndspace{$s->{buf}[0]} && defined($s->{buf}[1]) && !$isPostfix{$s->{buf}[1]} ) {
     action1($s);
   }
   skipWhitespace($s);
@@ -177,7 +177,7 @@ sub preserveEndspace {
 
 sub onWhitespaceConditionalComment {
   my $s = shift;
-  return (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]) &&
+  return (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} &&
           defined($s->{buf}[1]) && $s->{buf}[1] eq '/' &&
           defined($s->{buf}[2]) && ($s->{buf}[2] eq '/' || $s->{buf}[2] eq '*') &&
           defined($s->{buf}[3]) && $s->{buf}[3] eq '@');
@@ -214,7 +214,7 @@ sub minify {
   # Initialize the buffer.
   do {
     $s->{buf}[0] = _get($s);
-  } while (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]));
+  } while (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]});
   $s->{buf}[1] = _get($s);
   $s->{buf}[2] = _get($s);
   $s->{buf}[3] = _get($s);
@@ -226,7 +226,7 @@ sub minify {
 
   while (defined($s->{buf}[0])) { # on this line $s->{buf}[0] should always be a non-whitespace character or undef (i.e. end of file)
     
-    if (isWhitespace($s->{buf}[0])) { # check that this program is running correctly
+    if ($isWhitespace{$s->{buf}[0]}) { # check that this program is running correctly
       die 'minifier bug: minify while loop starting with whitespace, stopped';
     }
     
@@ -236,13 +236,13 @@ sub minify {
         $ccFlag = defined($s->{buf}[2]) && $s->{buf}[2] eq '@'; # tests in IE7 show no space allowed between slashes and at symbol
         do {
           $ccFlag ? action2($s) : action3($s);
-        } until (!defined($s->{buf}[0]) || isEndspace($s->{buf}[0]));
+        } until (!defined($s->{buf}[0]) || $isEndspace{$s->{buf}[0]});
         if (defined($s->{buf}[0])) { # $s->{buf}[0] is a new line
           if ($ccFlag) {
             action1($s); # cannot use preserveEndspace($s) here because it might not print the new line
             skipWhitespace($s);
           }
-          elsif (defined($s->{last}) && !isEndspace($s->{last}) && !isPrefix($s->{last})) {
+          elsif (defined($s->{last}) && !$isEndspace{$s->{last}} && !$isPrefix{$s->{last}}) {
             preserveEndspace($s);
           }
           else {
@@ -273,7 +273,7 @@ sub minify {
               # The comment represented whitespace that cannot be removed. Therefore replace the now gone comment with a whitespace.
               action1($s);
             }
-            elsif (defined($s->{last}) && !isPrefix($s->{last})) {
+            elsif (defined($s->{last}) && !$isPrefix{$s->{last}}) {
               preserveEndspace($s);
             }
             else {
@@ -288,13 +288,13 @@ sub minify {
       elsif (defined($s->{lastnws}) && ($s->{lastnws} eq ')' || $s->{lastnws} eq ']' ||
                                         $s->{lastnws} eq '.' || isAlphanum($s->{lastnws}))) { # division
         action1($s);
-        collapseWhitespace($s) if defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]);
+        collapseWhitespace($s) if defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
         # don't want a division to become a slash-slash comment with following conditional comment
         onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
       }
       else { # regexp literal
         putLiteral($s);
-        collapseWhitespace($s) if defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]);
+        collapseWhitespace($s) if defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
         # don't want closing delimiter to become a slash-slash comment with following conditional comment
         onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
       }
@@ -305,14 +305,14 @@ sub minify {
     }
     elsif ($s->{buf}[0] eq '+' || $s->{buf}[0] eq '-') { # careful with + + and - -
       action1_nws($s);
-      if (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0])) {
+      if (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
         collapseWhitespace($s);
         (defined($s->{buf}[1]) && $s->{buf}[1] eq $s->{last}) ? action1($s) : preserveEndspace($s);
       }
     }
     elsif (isAlphanum($s->{buf}[0])) { # keyword, identifiers, numbers
       action1_nws($s);
-      if (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0])) {
+      if (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
         collapseWhitespace($s);
         # if $s->{buf}[1] is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
         (defined($s->{buf}[1]) && (isAlphanum($s->{buf}[1]) || $s->{buf}[1] eq '.')) ? action1($s) : preserveEndspace($s);
