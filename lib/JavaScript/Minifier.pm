@@ -83,14 +83,23 @@ sub action1 {
     $s->{lastnws} = $s->{a};    
   }
   $s->{last} = $s->{a};
-  action2($s);
+
+  _put($s, $s->{a});
+  $s->{a} = $s->{b};
+  $s->{b} = $s->{c};
+  $s->{c} = $s->{d};
+  $s->{d} = _get($s);
 }
 
 # sneeky output $s->{a} for comments
 sub action2 {
   my $s = shift;
+
   _put($s, $s->{a});
-  action3($s);
+  $s->{a} = $s->{b};
+  $s->{b} = $s->{c};
+  $s->{c} = $s->{d};
+  $s->{d} = _get($s);
 }
 
 # move b to a
@@ -101,8 +110,11 @@ sub action2 {
 # i.e. delete a
 sub action3 {
   my $s = shift;
+
   $s->{a} = $s->{b};
-  action4($s);
+  $s->{b} = $s->{c};
+  $s->{c} = $s->{d};
+  $s->{d} = _get($s);
 }
 
 # move c to b
