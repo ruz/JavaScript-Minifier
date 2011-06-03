@@ -40,19 +40,12 @@ sub isPostfix { return $postfix{ $_[0] } }
 
 sub _get {
   my $s = shift;
-  if ($s->{inputType} eq 'file') {
+  if ($s->{inputFile} ) {
     return getc($s->{input});
   }
-  elsif ($s->{inputType} eq 'string') {
-    if ($s->{'inputPos'} < length($s->{input})) {
-      return substr($s->{input}, $s->{inputPos}++, 1);
-    }
-    else { # Simulate getc() when off the end of the input string.
-      return undef;
-    }
-  }
   else {
-   die "no input";
+    no warnings 'substr';
+    return substr($s->{input}, $s->{inputPos}++, 1);
   }
 }
 
@@ -202,10 +195,10 @@ sub minify {
   my $ref = \$s->{input};
   if (defined($ref) && ref($ref) eq 'SCALAR'){
     $s->{inputPos} = 0;
-    $s->{inputType} = 'string';
+    $s->{inputFile} = 0;
   }
   else {
-    $s->{inputType} = 'file';
+    $s->{inputFile} = 1;
   }
 
   # Determine if the output is to a string or a file.
