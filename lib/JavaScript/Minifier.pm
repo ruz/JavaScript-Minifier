@@ -76,35 +76,26 @@ sub _put {
 # i.e. print a and advance
 sub action1 {
   my $s = shift;
-  if (!isWhitespace($s->{a})) {
-    $s->{lastnws} = $s->{a};    
+  if (!isWhitespace($s->{buf}[0])) {
+    $s->{lastnws} = $s->{buf}[0];    
   }
 
-  _put($s, $s->{last} = $s->{a});
-  $s->{a} = $s->{b};
-  $s->{b} = $s->{c};
-  $s->{c} = $s->{d};
-  $s->{d} = _get($s);
+  _put($s, $s->{last} = shift @{ $s->{buf} });
+  push @{ $s->{buf} }, _get($s);
 }
 
 sub action1_nws {
   my $s = shift;
-  _put($s, $s->{last} = $s->{lastnws} = $s->{a});
-  $s->{a} = $s->{b};
-  $s->{b} = $s->{c};
-  $s->{c} = $s->{d};
-  $s->{d} = _get($s);
+  _put($s, $s->{last} = $s->{lastnws} = shift @{ $s->{buf} });
+  push @{ $s->{buf} }, _get($s);
 }
 
-# sneeky output $s->{a} for comments
+# sneeky output $s->{buf}[0] for comments
 sub action2 {
   my $s = shift;
 
-  _put($s, $s->{a});
-  $s->{a} = $s->{b};
-  $s->{b} = $s->{c};
-  $s->{c} = $s->{d};
-  $s->{d} = _get($s);
+  _put($s, shift @{ $s->{buf} });
+  push @{ $s->{buf} }, _get($s);
 }
 
 # move b to a
@@ -116,10 +107,8 @@ sub action2 {
 sub action3 {
   my $s = shift;
 
-  $s->{a} = $s->{b};
-  $s->{b} = $s->{c};
-  $s->{c} = $s->{d};
-  $s->{d} = _get($s);
+  shift @{ $s->{buf} };
+  push @{ $s->{buf} }, _get($s);
 }
 
 # move c to b
@@ -129,26 +118,26 @@ sub action3 {
 # i.e. delete b
 sub action4 {
   my $s = shift;
-  $s->{b} = $s->{c};
-  $s->{c} = $s->{d};
-  $s->{d} = _get($s);
+  $s->{buf}[1] = $s->{buf}[2];
+  $s->{buf}[2] = $s->{buf}[3];
+  $s->{buf}[3] = _get($s);
 }
 
 # -----------------------------------------------------------------------------
 
 # put string and regexp literals
-# when this sub is called, $s->{a} is on the opening delimiter character
+# when this sub is called, $s->{buf}[0] is on the opening delimiter character
 sub putLiteral {
   my $s = shift;
-  my $delimiter = $s->{a}; # ', " or /
+  my $delimiter = $s->{buf}[0]; # ', " or /
   action1_nws($s);
   do {
-    while (defined($s->{a}) && $s->{a} eq '\\') { # escape character only escapes only the next one character
+    while (defined($s->{buf}[0]) && $s->{buf}[0] eq '\\') { # escape character only escapes only the next one character
       action1_nws($s);       
       action1_nws($s);       
     }
     action1($s);
-  } until ($s->{last} eq $delimiter || !defined($s->{a}));
+  } until ($s->{last} eq $delimiter || !defined($s->{buf}[0]));
   if ($s->{last} ne $delimiter) { # ran off end of file before printing the closing delimiter
     die 'unterminated ' . ($delimiter eq '\'' ? 'single quoted string' : $delimiter eq '"' ? 'double quoted string' : 'regular expression') . ' literal, stopped';
   }
@@ -156,35 +145,38 @@ sub putLiteral {
 
 # -----------------------------------------------------------------------------
 
-# If $s->{a} is a whitespace then collapse all following whitespace.
-# If any of the whitespace is a new line then ensure $s->{a} is a new line
+# If $s->{buf}[0] is a whitespace then collapse all following whitespace.
+# If any of the whitespace is a new line then ensure $s->{buf}[0] is a new line
 # when this function ends.
 sub collapseWhitespace {
   my $s = shift;
 
-  $s->{a} = "\n" if isEndspace($s->{a});
+  my $lead = shift @{ $s->{buf} };
+  $lead = "\n" if isEndspace($lead);
 
-  while ( defined($s->{b}) && isWhitespace($s->{b}) ) {
-    $s->{a} = "\n" if isEndspace($s->{b});
-    action4($s); # delete b
+  while ( defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]) ) {
+    $lead = "\n" if isEndspace($s->{buf}[0]);
+    shift @{ $s->{buf} };
+    push @{ $s->{buf} }, _get($s);
   }
+  unshift @{ $s->{buf} }, $lead;
 }
 
-# Advance $s->{a} to non-whitespace or end of file.
+# Advance $s->{buf}[0] to non-whitespace or end of file.
 # Doesn't print any of this whitespace.
 sub skipWhitespace {
   my $s = shift;
-  while (defined($s->{a}) && isWhitespace($s->{a})) {
+  while (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0])) {
     action3($s);
   }
 }
 
-# Advance $s->{a} to non-whitespace or end of file
+# Advance $s->{buf}[0] to non-whitespace or end of file
 # If any of the whitespace is a new line then print one new line.
 sub preserveEndspace {
   my $s = shift;
-  collapseWhitespace($s) if defined($s->{a}) && isWhitespace($s->{a});
-  if (defined($s->{a}) && isEndspace($s->{a}) && defined($s->{b}) && !isPostfix($s->{b}) ) {
+  collapseWhitespace($s) if defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]);
+  if (defined($s->{buf}[0]) && isEndspace($s->{buf}[0]) && defined($s->{buf}[1]) && !isPostfix($s->{buf}[1]) ) {
     action1($s);
   }
   skipWhitespace($s);
@@ -192,10 +184,10 @@ sub preserveEndspace {
 
 sub onWhitespaceConditionalComment {
   my $s = shift;
-  return (defined($s->{a}) && isWhitespace($s->{a}) &&
-          defined($s->{b}) && $s->{b} eq '/' &&
-          defined($s->{c}) && ($s->{c} eq '/' || $s->{c} eq '*') &&
-          defined($s->{d}) && $s->{d} eq '@');
+  return (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]) &&
+          defined($s->{buf}[1]) && $s->{buf}[1] eq '/' &&
+          defined($s->{buf}[2]) && ($s->{buf}[2] eq '/' || $s->{buf}[2] eq '*') &&
+          defined($s->{buf}[3]) && $s->{buf}[3] eq '@');
 }
 
 # -----------------------------------------------------------------------------
@@ -228,31 +220,31 @@ sub minify {
 
   # Initialize the buffer.
   do {
-    $s->{a} = _get($s);
-  } while (defined($s->{a}) && isWhitespace($s->{a}));
-  $s->{b} = _get($s);
-  $s->{c} = _get($s);
-  $s->{d} = _get($s);
+    $s->{buf}[0] = _get($s);
+  } while (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]));
+  $s->{buf}[1] = _get($s);
+  $s->{buf}[2] = _get($s);
+  $s->{buf}[3] = _get($s);
   $s->{last} = undef; # assign for safety
   $s->{lastnws} = undef; # assign for safety
 
   # local variables
   my $ccFlag; # marks if a comment is an Internet Explorer conditional comment and should be printed to output
 
-  while (defined($s->{a})) { # on this line $s->{a} should always be a non-whitespace character or undef (i.e. end of file)
+  while (defined($s->{buf}[0])) { # on this line $s->{buf}[0] should always be a non-whitespace character or undef (i.e. end of file)
     
-    if (isWhitespace($s->{a})) { # check that this program is running correctly
+    if (isWhitespace($s->{buf}[0])) { # check that this program is running correctly
       die 'minifier bug: minify while loop starting with whitespace, stopped';
     }
     
-    # Each branch handles trailing whitespace and ensures $s->{a} is on non-whitespace or undef when branch finishes
-    if ($s->{a} eq '/') { # a division, comment, or regexp literal
-      if (defined($s->{b}) && $s->{b} eq '/') { # slash-slash comment
-        $ccFlag = defined($s->{c}) && $s->{c} eq '@'; # tests in IE7 show no space allowed between slashes and at symbol
+    # Each branch handles trailing whitespace and ensures $s->{buf}[0] is on non-whitespace or undef when branch finishes
+    if ($s->{buf}[0] eq '/') { # a division, comment, or regexp literal
+      if (defined($s->{buf}[1]) && $s->{buf}[1] eq '/') { # slash-slash comment
+        $ccFlag = defined($s->{buf}[2]) && $s->{buf}[2] eq '@'; # tests in IE7 show no space allowed between slashes and at symbol
         do {
           $ccFlag ? action2($s) : action3($s);
-        } until (!defined($s->{a}) || isEndspace($s->{a}));
-        if (defined($s->{a})) { # $s->{a} is a new line
+        } until (!defined($s->{buf}[0]) || isEndspace($s->{buf}[0]));
+        if (defined($s->{buf}[0])) { # $s->{buf}[0] is a new line
           if ($ccFlag) {
             action1($s); # cannot use preserveEndspace($s) here because it might not print the new line
             skipWhitespace($s);
@@ -265,12 +257,12 @@ sub minify {
           }
         }
       }
-      elsif (defined($s->{b}) && $s->{b} eq '*') { # slash-star comment
-        $ccFlag = defined($s->{c}) && $s->{c} eq '@'; # test in IE7 shows no space allowed between star and at symbol
+      elsif (defined($s->{buf}[1]) && $s->{buf}[1] eq '*') { # slash-star comment
+        $ccFlag = defined($s->{buf}[2]) && $s->{buf}[2] eq '@'; # test in IE7 shows no space allowed between star and at symbol
         do {
           $ccFlag ? action2($s) : action3($s);
-        } until (!defined($s->{b}) || ($s->{a} eq '*' && $s->{b} eq '/'));
-        if (defined($s->{b})) { # $s->{a} is asterisk and $s->{b} is foreslash
+        } until (!defined($s->{buf}[1]) || ($s->{buf}[0] eq '*' && $s->{buf}[1] eq '/'));
+        if (defined($s->{buf}[1])) { # $s->{buf}[0] is asterisk and $s->{buf}[1] is foreslash
           if ($ccFlag) {
             action2($s); # the *
             action2($s); # the /
@@ -279,12 +271,12 @@ sub minify {
           }
           else { # the comment is being removed
             action3($s); # the *
-            $s->{a} = ' ';  # the /
+            $s->{buf}[0] = ' ';  # the /
             collapseWhitespace($s);
-            if (defined($s->{last}) && defined($s->{b}) && 
-                ((isAlphanum($s->{last}) && (isAlphanum($s->{b})||$s->{b} eq '.')) ||
-                 ($s->{last} eq '+' && $s->{b} eq '+') || ($s->{last} eq '-' && $s->{b} eq '-'))) { # for a situation like 5-/**/-2 or a/**/a
-              # When entering this block $s->{a} is whitespace.
+            if (defined($s->{last}) && defined($s->{buf}[1]) && 
+                ((isAlphanum($s->{last}) && (isAlphanum($s->{buf}[1])||$s->{buf}[1] eq '.')) ||
+                 ($s->{last} eq '+' && $s->{buf}[1] eq '+') || ($s->{last} eq '-' && $s->{buf}[1] eq '-'))) { # for a situation like 5-/**/-2 or a/**/a
+              # When entering this block $s->{buf}[0] is whitespace.
               # The comment represented whitespace that cannot be removed. Therefore replace the now gone comment with a whitespace.
               action1($s);
             }
@@ -303,46 +295,46 @@ sub minify {
       elsif (defined($s->{lastnws}) && ($s->{lastnws} eq ')' || $s->{lastnws} eq ']' ||
                                         $s->{lastnws} eq '.' || isAlphanum($s->{lastnws}))) { # division
         action1($s);
-        collapseWhitespace($s) if defined($s->{a}) && isWhitespace($s->{a});
+        collapseWhitespace($s) if defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]);
         # don't want a division to become a slash-slash comment with following conditional comment
         onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
       }
       else { # regexp literal
         putLiteral($s);
-        collapseWhitespace($s) if defined($s->{a}) && isWhitespace($s->{a});
+        collapseWhitespace($s) if defined($s->{buf}[0]) && isWhitespace($s->{buf}[0]);
         # don't want closing delimiter to become a slash-slash comment with following conditional comment
         onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
       }
     }
-    elsif ($s->{a} eq '\'' || $s->{a} eq '"' ) { # string literal
+    elsif ($s->{buf}[0] eq '\'' || $s->{buf}[0] eq '"' ) { # string literal
       putLiteral($s);
       preserveEndspace($s);
     }
-    elsif ($s->{a} eq '+' || $s->{a} eq '-') { # careful with + + and - -
+    elsif ($s->{buf}[0] eq '+' || $s->{buf}[0] eq '-') { # careful with + + and - -
       action1_nws($s);
-      if (defined($s->{a}) && isWhitespace($s->{a})) {
+      if (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0])) {
         collapseWhitespace($s);
-        (defined($s->{b}) && $s->{b} eq $s->{last}) ? action1($s) : preserveEndspace($s);
+        (defined($s->{buf}[1]) && $s->{buf}[1] eq $s->{last}) ? action1($s) : preserveEndspace($s);
       }
     }
-    elsif (isAlphanum($s->{a})) { # keyword, identifiers, numbers
+    elsif (isAlphanum($s->{buf}[0])) { # keyword, identifiers, numbers
       action1_nws($s);
-      if (defined($s->{a}) && isWhitespace($s->{a})) {
+      if (defined($s->{buf}[0]) && isWhitespace($s->{buf}[0])) {
         collapseWhitespace($s);
-        # if $s->{b} is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
-        (defined($s->{b}) && (isAlphanum($s->{b}) || $s->{b} eq '.')) ? action1($s) : preserveEndspace($s);
+        # if $s->{buf}[1] is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
+        (defined($s->{buf}[1]) && (isAlphanum($s->{buf}[1]) || $s->{buf}[1] eq '.')) ? action1($s) : preserveEndspace($s);
       }
     }
-    elsif ($s->{a} eq ']' || $s->{a} eq '}' || $s->{a} eq ')') { # no need to be followed by space but maybe needs following new line
+    elsif ($s->{buf}[0] eq ']' || $s->{buf}[0] eq '}' || $s->{buf}[0] eq ')') { # no need to be followed by space but maybe needs following new line
       action1_nws($s);
       preserveEndspace($s);
     }
-    elsif ($s->{stripDebug} && $s->{a} eq ';' &&
-           defined($s->{b}) && $s->{b} eq ';' &&
-           defined($s->{c}) && $s->{c} eq ';') {
+    elsif ($s->{stripDebug} && $s->{buf}[0] eq ';' &&
+           defined($s->{buf}[1]) && $s->{buf}[1] eq ';' &&
+           defined($s->{buf}[2]) && $s->{buf}[2] eq ';') {
       action3($s); # delete one of the semi-colons
-      $s->{a} = '/'; # replace the other two semi-colons
-      $s->{b} = '/'; # so the remainder of line is removed
+      $s->{buf}[0] = '/'; # replace the other two semi-colons
+      $s->{buf}[1] = '/'; # so the remainder of line is removed
     }
     else { # anything else just prints and trailing whitespace discarded
       action1($s);
