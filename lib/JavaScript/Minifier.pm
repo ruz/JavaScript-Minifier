@@ -173,7 +173,8 @@ sub collapseWhitespace {
 sub skipWhitespace {
   my $s = shift;
   while (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
-    action3($s);
+    shift @{ $s->{buf} };
+    _get_more($s) if @{ $s->{buf} } < 4;
   }
 }
 
