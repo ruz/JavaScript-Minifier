@@ -129,15 +129,20 @@ sub action3 {
 # when this sub is called, $s->{buf}[0] is on the opening delimiter character
 sub putLiteral {
   my $s = shift;
-  my $delimiter = $s->{buf}[0]; # ', " or /
-  action1_nws($s);
+  my $delimiter = my $buf = shift @{ $s->{buf} }; # ', " or /
   do {
     while (defined($s->{buf}[0]) && $s->{buf}[0] eq '\\') { # escape character only escapes only the next one character
-      action1_nws($s);       
-      action1_nws($s);       
+      $buf .= shift @{ $s->{buf} };
+      $buf .= shift @{ $s->{buf} };
+      _get_more($s) if @{ $s->{buf} } < 2;
     }
-    action1($s);
+    $buf .= ($s->{last} = shift @{ $s->{buf} });
+    _get_more($s) if @{ $s->{buf} } < 4;
   } until ($s->{last} eq $delimiter || !defined($s->{buf}[0]));
+
+  _put($s, $buf);
+  $s->{lastnws} = $s->{last};
+
   if ($s->{last} ne $delimiter) { # ran off end of file before printing the closing delimiter
     die 'unterminated ' . ($delimiter eq '\'' ? 'single quoted string' : $delimiter eq '"' ? 'double quoted string' : 'regular expression') . ' literal, stopped';
   }
