@@ -12,7 +12,8 @@ our $VERSION = '1.05';
 # -----------------------------------------------------------------------------
 
 #return true if the character is allowed in identifier.
-sub isAlphanum { return $_[0] =~ /[\w\$\\]/ || ord($_[0]) > 126 }
+my %isAlphanum = map { $_ => 1 } ('a'..'z', 'A'..'Z', 0 .. 9, '_', '$', '\\');
+sub isAlphanum { return $isAlphanum{ $_[0] } || ord($_[0]) > 126 }
 
 my %isSpace = map { $_ => 1 } (' ', "\t");
 sub isSpace { return $isSpace{ $_[0] } }
