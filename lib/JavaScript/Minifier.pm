@@ -37,6 +37,8 @@ sub isPrefix { return $isPrefix{ $_[0] } }
 my %isPostfix = ( %isInfix, map { $_ => 1 } ('}', ')', ']') );
 sub isPostfix { return $isPostfix{ $_[0] } }
 
+my %isSpecial = map { $_ => 1 } ('}', ')', ']', '+', '-', '/', ';', "'", '"' );
+
 # -----------------------------------------------------------------------------
 
 sub _get {
@@ -237,7 +239,27 @@ sub minify {
     }
     
     # Each branch handles trailing whitespace and ensures $s->{buf}[0] is on non-whitespace or undef when branch finishes
-    if ($s->{buf}[0] eq '/') { # a division, comment, or regexp literal
+    if (isAlphanum($s->{buf}[0])) { # keyword, identifiers, numbers
+      my $buf = '';
+      do {
+        $buf .= shift @{ $s->{buf} };
+        _get_more($s) unless @{ $s->{buf} };
+      } while defined $s->{buf}[0] && !$isSpecial{$s->{buf}[0]} && !$isWhitespace{$s->{buf}[0]};
+      _put($s, $buf);
+      $s->{lastnws} = $s->{last} = substr $buf, -1;
+      _get_more($s) if @{ $s->{buf} } < 4;
+
+      if (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
+        collapseWhitespace($s);
+        # if $s->{buf}[1] is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
+        (defined($s->{buf}[1]) && (isAlphanum($s->{buf}[1]) || $s->{buf}[1] eq '.')) ? action1($s) : preserveEndspace($s);
+      }
+    }
+    elsif ($s->{buf}[0] eq ']' || $s->{buf}[0] eq '}' || $s->{buf}[0] eq ')') { # no need to be followed by space but maybe needs following new line
+      action1_nws($s);
+      preserveEndspace($s);
+    }
+    elsif ($s->{buf}[0] eq '/') { # a division, comment, or regexp literal
       if (defined($s->{buf}[1]) && $s->{buf}[1] eq '/') { # slash-slash comment
         $ccFlag = defined($s->{buf}[2]) && $s->{buf}[2] eq '@'; # tests in IE7 show no space allowed between slashes and at symbol
         do {
@@ -315,18 +337,6 @@ sub minify {
         collapseWhitespace($s);
         (defined($s->{buf}[1]) && $s->{buf}[1] eq $s->{last}) ? action1($s) : preserveEndspace($s);
       }
-    }
-    elsif (isAlphanum($s->{buf}[0])) { # keyword, identifiers, numbers
-      action1_nws($s);
-      if (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
-        collapseWhitespace($s);
-        # if $s->{buf}[1] is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
-        (defined($s->{buf}[1]) && (isAlphanum($s->{buf}[1]) || $s->{buf}[1] eq '.')) ? action1($s) : preserveEndspace($s);
-      }
-    }
-    elsif ($s->{buf}[0] eq ']' || $s->{buf}[0] eq '}' || $s->{buf}[0] eq ')') { # no need to be followed by space but maybe needs following new line
-      action1_nws($s);
-      preserveEndspace($s);
     }
     elsif ($s->{stripDebug} && $s->{buf}[0] eq ';' &&
            defined($s->{buf}[1]) && $s->{buf}[1] eq ';' &&
