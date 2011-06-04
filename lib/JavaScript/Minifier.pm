@@ -346,7 +346,7 @@ sub minify {
       $s->{buf}[1] = '/'; # so the remainder of line is removed
     }
     else { # anything else just prints and trailing whitespace discarded
-      action1($s);
+      action1_nws($s);
       skipWhitespace($s);
     }
   }
