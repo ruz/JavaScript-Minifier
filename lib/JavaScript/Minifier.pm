@@ -182,10 +182,8 @@ sub skipWhitespace {
 # If any of the whitespace is a new line then print one new line.
 sub preserveEndspace {
   my $s = shift;
-  return unless defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
 
-  collapseWhitespace($s);
-  if (defined($s->{buf}[0]) && $isEndspace{$s->{buf}[0]} && defined($s->{buf}[1]) && !$isPostfix{$s->{buf}[1]} ) {
+  if ( $isEndspace{$s->{buf}[0]} && defined($s->{buf}[1]) && !$isPostfix{$s->{buf}[1]} ) {
     _put($s, shift @{ $s->{buf} });
   } else {
     shift @{ $s->{buf} };
@@ -267,7 +265,10 @@ sub minify {
     }
     elsif ($s->{buf}[0] eq ']' || $s->{buf}[0] eq '}' || $s->{buf}[0] eq ')') { # no need to be followed by space but maybe needs following new line
       action1_nws($s);
-      preserveEndspace($s);
+      if ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
+          collapseWhitespace($s);
+          preserveEndspace($s);
+      }
     }
     elsif ($s->{buf}[0] eq '/') { # a division, comment, or regexp literal
       if (defined($s->{buf}[1]) && $s->{buf}[1] eq '/') { # slash-slash comment
@@ -281,6 +282,7 @@ sub minify {
             skipWhitespace($s);
           }
           elsif (defined($s->{last}) && !$isEndspace{$s->{last}} && !$isPrefix{$s->{last}}) {
+            collapseWhitespace($s);
             preserveEndspace($s);
           }
           else {
@@ -298,7 +300,10 @@ sub minify {
             action2($s); # the *
             action2($s); # the /
             # inside the conditional comment there may be a missing terminal semi-colon
-            preserveEndspace($s);
+            if ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
+                collapseWhitespace($s);
+                preserveEndspace($s);
+            }
           }
           else { # the comment is being removed
             action3($s); # the *
@@ -326,20 +331,27 @@ sub minify {
       elsif (defined($s->{lastnws}) && ($s->{lastnws} eq ')' || $s->{lastnws} eq ']' ||
                                         $s->{lastnws} eq '.' || isAlphanum($s->{lastnws}))) { # division
         action1($s);
-        collapseWhitespace($s) if defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
-        # don't want a division to become a slash-slash comment with following conditional comment
-        onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
+        if ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
+            collapseWhitespace($s);
+            # don't want a division to become a slash-slash comment with following conditional comment
+            onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
+        }
       }
       else { # regexp literal
         putLiteral($s);
-        collapseWhitespace($s) if defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
-        # don't want closing delimiter to become a slash-slash comment with following conditional comment
-        onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
+        if ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
+            collapseWhitespace($s);
+            # don't want a division to become a slash-slash comment with following conditional comment
+            onWhitespaceConditionalComment($s) ? action1($s) : preserveEndspace($s);
+        }
       }
     }
     elsif ($s->{buf}[0] eq '\'' || $s->{buf}[0] eq '"' ) { # string literal
       putLiteral($s);
-      preserveEndspace($s);
+      if ( defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]} ) {
+          collapseWhitespace($s);
+          preserveEndspace($s);
+      }
     }
     elsif ($s->{buf}[0] eq '+' || $s->{buf}[0] eq '-') { # careful with + + and - -
       action1_nws($s);
