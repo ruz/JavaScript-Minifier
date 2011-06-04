@@ -181,11 +181,15 @@ sub skipWhitespace {
 # If any of the whitespace is a new line then print one new line.
 sub preserveEndspace {
   my $s = shift;
-  collapseWhitespace($s) if defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
+  return unless defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]};
+
+  collapseWhitespace($s);
   if (defined($s->{buf}[0]) && $isEndspace{$s->{buf}[0]} && defined($s->{buf}[1]) && !$isPostfix{$s->{buf}[1]} ) {
-    action1($s);
+    _put($s, shift @{ $s->{buf} });
+  } else {
+    shift @{ $s->{buf} };
   }
-  skipWhitespace($s);
+  _get_more($s) if @{ $s->{buf} } < 4;
 }
 
 sub onWhitespaceConditionalComment {
