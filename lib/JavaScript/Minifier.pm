@@ -247,7 +247,7 @@ sub minify {
     }
     
     # Each branch handles trailing whitespace and ensures $s->{buf}[0] is on non-whitespace or undef when branch finishes
-    if (isAlphanum($s->{buf}[0])) { # keyword, identifiers, numbers
+    if (!$isSpecial{$s->{buf}[0]}) { # keyword, identifiers, numbers
       my $buf = '';
       do {
         $buf .= shift @{ $s->{buf} };
@@ -258,9 +258,13 @@ sub minify {
       _get_more($s) if @{ $s->{buf} } < 4;
 
       if (defined($s->{buf}[0]) && $isWhitespace{$s->{buf}[0]}) {
-        collapseWhitespace($s);
-        # if $s->{buf}[1] is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
-        (defined($s->{buf}[1]) && (isAlphanum($s->{buf}[1]) || $s->{buf}[1] eq '.')) ? action1($s) : preserveEndspace($s);
+        if ( isAlphanum($s->{last}) ) {
+          collapseWhitespace($s);
+          # if $s->{buf}[1] is '.' could be (12 .toString()) which is property invocation. If space removed becomes decimal point and error.
+          (defined($s->{buf}[1]) && (isAlphanum($s->{buf}[1]) || $s->{buf}[1] eq '.')) ? action1($s) : preserveEndspace($s);
+        } else {
+          skipWhitespace($s);
+        }
       }
     }
     elsif ($s->{buf}[0] eq ']' || $s->{buf}[0] eq '}' || $s->{buf}[0] eq ')') { # no need to be followed by space but maybe needs following new line
